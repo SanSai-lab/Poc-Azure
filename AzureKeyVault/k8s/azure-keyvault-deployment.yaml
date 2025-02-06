@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-keyvault-app
+  namespace: poc-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: azure-keyvault-app
+  template:
+    metadata:
+      labels:
+        app: azure-keyvault-app
+    spec:
+      containers:
+        - name: azure-keyvault-app
+          image: saipocregistry.azurecr.io/azure-keyvault-app:1.5
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "dev"
+            - name: AZURE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: azure-keyvault-secret
+                  key: AZURE_CLIENT_ID
+            - name: AZURE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: azure-keyvault-secret
+                  key: AZURE_CLIENT_SECRET
+            - name: AZURE_TENANT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: azure-keyvault-secret
+                  key: AZURE_TENANT_ID
